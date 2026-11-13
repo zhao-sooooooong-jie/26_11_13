@@ -55,6 +55,7 @@ public:
             LOG_FATAL("bind suruct error");
             exit(BIND_ERR);
         }
+        LOG_DEBUG("bind socket success, ip:" << _ip << ",port:" << _port);
     }
     void Loop(){}
 
