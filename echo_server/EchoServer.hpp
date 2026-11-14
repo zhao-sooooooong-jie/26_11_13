@@ -6,6 +6,7 @@
 #include<string>
 #include <cstdint>
 #include<strings.h>
+#include<unistd.h>
 #include<sys/socket.h>
 #include<netinet/in.h>
 #include<arpa/inet.h>
@@ -29,7 +30,9 @@ public:
      _ip(ip),
      _port(port)
     {}
-    ~UdpServer(){}
+    ~UdpServer(){
+        close(_sockfd);
+    }
     void Init()
     {
         //1.创建socket,本质：打开网卡
@@ -57,7 +60,26 @@ public:
         }
         LOG_DEBUG("bind socket success, ip:" << _ip << ",port:" << _port);
     }
-    void Loop(){}
+    void Loop(){
+
+        char inbuffer[1024];
+        while(true)
+        {
+            struct sockaddr_in peer;
+            socklen_t len = sizeof(peer);
+            ssize_t n = recvfrom(_sockfd, &inbuffer, sizeof(inbuffer)-1 , 0, (struct sockaddr *)&peer, &len);
+            if(n > 0){
+                inbuffer[n] = 0;
+                LOG_DEBUG("clint say#" << inbuffer);
+                std::string echo_string = "server echo# ";
+                echo_string += inbuffer;
+                sendto(_sockfd, &echo_string, sizeof(echo_string), 0, (struct sockaddr *)&peer, len);
+            }
+            else{
+                LOG_ERROR("recvfrom error");
+            }
+        }
+    }
 
 
 private:
