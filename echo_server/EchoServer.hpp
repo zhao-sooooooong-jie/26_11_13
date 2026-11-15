@@ -69,11 +69,14 @@ public:
             socklen_t len = sizeof(peer);
             ssize_t n = recvfrom(_sockfd, &inbuffer, sizeof(inbuffer)-1 , 0, (struct sockaddr *)&peer, &len);
             if(n > 0){
-                inbuffer[n] = 0;
+                /* inbuffer[n] = 0;
                 LOG_DEBUG("clint say#" << inbuffer);
                 std::string echo_string = "server echo# ";
-                echo_string += inbuffer;
-                sendto(_sockfd, echo_string.c_str(), echo_string.size(), 0, (struct sockaddr *)&peer, len);
+                echo_string += inbuffer; */
+                std::string client_ip = inet_ntoa(peer.sin_addr);
+                uint16_t client_port = peer.sin_port;
+                std::string client_address = "[" + client_ip + std::to_string(client_port) +"]";
+                sendto(_sockfd, client_address.c_str(), client_address.size(), 0, (struct sockaddr *)&peer, len);
             }
             else{
                 LOG_ERROR("recvfrom error");
