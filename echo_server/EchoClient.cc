@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
         std::getline(std::cin, message);
 
         //2.先传后读
-        ssize_t n = sendto(sockfd, &message, sizeof(message)-1, 0, (struct sockaddr *)&server, sizeof(server));
+        ssize_t n = sendto(sockfd, message.c_str(), message.size(), 0, (struct sockaddr *)&server, sizeof(server));
         if(n > 0)
         {
             char inbuffer[1024] = {0};

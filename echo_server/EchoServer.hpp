@@ -73,7 +73,7 @@ public:
                 LOG_DEBUG("clint say#" << inbuffer);
                 std::string echo_string = "server echo# ";
                 echo_string += inbuffer;
-                sendto(_sockfd, &echo_string, sizeof(echo_string), 0, (struct sockaddr *)&peer, len);
+                sendto(_sockfd, echo_string.c_str(), echo_string.size(), 0, (struct sockaddr *)&peer, len);
             }
             else{
                 LOG_ERROR("recvfrom error");
