@@ -25,9 +25,8 @@ enum
 
 class UdpServer{
 public:
-    UdpServer(const std::string &ip, uint16_t port = default_port)
+    UdpServer(uint16_t port = default_port)
     :_sockfd(default_fd),
-     _ip(ip),
      _port(port)
     {}
     ~UdpServer(){
@@ -48,7 +47,8 @@ public:
         struct sockaddr_in local;
         bzero(&local, sizeof(local));
         local.sin_family = AF_INET;
-        local.sin_addr.s_addr = inet_addr(_ip.c_str());
+        //local.sin_addr.s_addr = inet_addr(_ip.c_str());
+        local.sin_addr.s_addr = INADDR_ANY; //
         local.sin_port = htons(_port);//h->n
 
         //3.bind socket 信息
@@ -58,7 +58,7 @@ public:
             LOG_FATAL("bind suruct error");
             exit(BIND_ERR);
         }
-        LOG_DEBUG("bind socket success, ip:" << _ip << ",port:" << _port);
+        LOG_DEBUG("bind socket success, "<< ",port:" << _port);
     }
     void Loop(){
 
@@ -84,7 +84,6 @@ public:
 
 private:
     int _sockfd;
-    std::string _ip;
     uint16_t _port;
 
 };
